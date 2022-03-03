@@ -280,7 +280,7 @@ namespace ChessQueens
 
                     if (gameBoard[row, column] != empty)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write(gameBoard[row, column] + "\t");
                         Console.ForegroundColor = ConsoleColor.DarkGreen;
                     }
