@@ -28,7 +28,10 @@ namespace ChessQueens
         }
 
         const string empty = "~";
-        const string queen = "Q1";
+        const string RedQueen = "queen";
+        const string RedKing = "king";
+        const string BlueQueen = "queen";
+        const string BlueKing = "king";
 
 
 
@@ -44,7 +47,10 @@ namespace ChessQueens
         public static bool Game(string[,] gameBoard, string[] playersBoard, int[,] numBoard)
         {
             Random rnd = new Random();
-            gameBoard[rnd.Next(8), rnd.Next(8)] = queen;//temporery solution, need to place all pieces
+            gameBoard[rnd.Next(8), rnd.Next(8)] = RedQueen;
+            gameBoard[rnd.Next(8), rnd.Next(8)] = RedKing;
+            gameBoard[rnd.Next(8), rnd.Next(8)] = BlueQueen;
+            gameBoard[rnd.Next(8), rnd.Next(8)] = BlueKing;///temporery solution, need to place all pieces
 
             int playersAmount = 2;
 
@@ -64,7 +70,7 @@ namespace ChessQueens
 
 
 
-                    MoveTo(gameBoard, playersBoard, numBoard, i, queen);
+                    MoveTo(gameBoard, playersBoard, numBoard, i, RedQueen);
 
 
 
@@ -93,19 +99,20 @@ namespace ChessQueens
 
         public static void MoveTo(string[,] gameBoard, string[] playersBoard, int[,] numBoard, int i, string piece)
         {
-
+            //getting the input from the player
             Console.WriteLine();
             Console.WriteLine("{0} where do you want to move {1} to", playersBoard[i], piece);
             int place = int.Parse(Console.ReadLine());
+            
 
             int[] placingIndex = FindNumIndex(numBoard, place);
             place = 0;
 
-            if (placingIndex[0] != -1 && gameBoard[placingIndex[0], placingIndex[1]] == empty)
+            if (IsPossibleToPlace(placingIndex, gameBoard))
             {
                 int[] pieceIndex = FindPieceIndex(gameBoard, piece);
-                gameBoard[pieceIndex[0], pieceIndex[1]] = empty;
-                gameBoard[placingIndex[0], placingIndex[1]] = piece;
+                gameBoard[pieceIndex[0], pieceIndex[1]] = empty;//set the prev place of this piece as empty
+                gameBoard[placingIndex[0], placingIndex[1]] = piece;//moving the piece to the desired place
                 if (playersBoard[i] == playersBoard[0])
                     printBoard(gameBoard, numBoard);
             }
@@ -119,7 +126,13 @@ namespace ChessQueens
 
 
 
-
+        public static bool IsPossibleToPlace(int[] placingIndex, string[,] gameBoard)
+        {
+            if (placingIndex[0] != -1 /*that index exists*/ && gameBoard[placingIndex[0], placingIndex[1]] == empty/*that index is empty*/)
+                return true;
+            else
+                return false;
+        }
 
 
 
