@@ -28,13 +28,20 @@ namespace ChessQueens
         }
 
         const string empty = "~";
-        const string RedQueen = "queen";
-        const string RedKing = "king";
-        const string BlueQueen = "queen";
-        const string BlueKing = "king";
+        const string RedQueen = "R-queen";
+        const string RedKing = "R-king";
+        const string BlueQueen = "B-queen";
+        const string BlueKing = "B-king";
 
 
-
+        public static void placingPieces(string[,] gameBoard)
+        {
+            Random rnd = new Random();
+            gameBoard[rnd.Next(8), rnd.Next(8)] = RedQueen;
+            gameBoard[rnd.Next(8), rnd.Next(8)] = RedKing;
+            gameBoard[rnd.Next(8), rnd.Next(8)] = BlueQueen;
+            gameBoard[rnd.Next(8), rnd.Next(8)] = BlueKing;///temporery solution, need to place all pieces
+        }
 
 
 
@@ -46,11 +53,8 @@ namespace ChessQueens
 
         public static bool Game(string[,] gameBoard, string[] playersBoard, int[,] numBoard)
         {
-            Random rnd = new Random();
-            gameBoard[rnd.Next(8), rnd.Next(8)] = RedQueen;
-            gameBoard[rnd.Next(8), rnd.Next(8)] = RedKing;
-            gameBoard[rnd.Next(8), rnd.Next(8)] = BlueQueen;
-            gameBoard[rnd.Next(8), rnd.Next(8)] = BlueKing;///temporery solution, need to place all pieces
+
+            placingPieces(gameBoard);
 
             int playersAmount = 2;
 
@@ -62,15 +66,17 @@ namespace ChessQueens
             while (!isWon)
             {
 
-                printBoard(gameBoard, numBoard);
+                PrintBoard(gameBoard, numBoard) ;
 
                 for (int i = 0; i < playersAmount; i++, turns++)
                 {
 
 
+                    string color = SelectingColor(i);
+                    string piece = SelectingPiece(color);
 
 
-                    MoveTo(gameBoard, playersBoard, numBoard, i, RedQueen);
+                    MoveTo(gameBoard, playersBoard, numBoard, i, piece, color);
 
 
 
@@ -93,15 +99,44 @@ namespace ChessQueens
             }
             return false;
         }
+        public static string SelectingColor(int i)
+        {
+            string color = "";
+            switch (i)
+            {
+                case 0:
+                    color = "blue";
+                    break;
+                case 1:
+                    color = "red";
+                    break;
+                    
+            }//picking color
+            return color;
+        }
+        public static string SelectingPiece(string color)
+        {
 
+            Console.WriteLine("what piece you want to move - queen or king");
+            string piece = Console.ReadLine();
+            if (color == "blue" && piece == "queen")
+                piece = BlueQueen;
+            else if (color == "blue" && piece == "king")
+                piece = BlueKing;
+            else if (color == "red" && piece == "queen")
+                piece = RedQueen;
+            else if (color == "red" && piece == "king")
+                piece = RedKing;
+            return piece;//picking piece
+        }
 
-
-
-        public static void MoveTo(string[,] gameBoard, string[] playersBoard, int[,] numBoard, int i, string piece)
+        public static void MoveTo(string[,] gameBoard, string[] playersBoard, int[,] numBoard, int i, string piece, string color)
         {
             //getting the input from the player
             Console.WriteLine();
-            Console.WriteLine("{0} where do you want to move {1} to", playersBoard[i], piece);
+            //to check what piece the player wants to move by switch case of color by i and let player chose king and queen
+
+            Console.WriteLine("{0} where do you want to move {1} {2} to", playersBoard[i],color, piece);
             int place = int.Parse(Console.ReadLine());
             
 
@@ -114,7 +149,7 @@ namespace ChessQueens
                 gameBoard[pieceIndex[0], pieceIndex[1]] = empty;//set the prev place of this piece as empty
                 gameBoard[placingIndex[0], placingIndex[1]] = piece;//moving the piece to the desired place
                 if (playersBoard[i] == playersBoard[0])
-                    printBoard(gameBoard, numBoard);
+                    PrintBoard(gameBoard, numBoard);
             }
 
             else
@@ -280,9 +315,7 @@ namespace ChessQueens
 
         }
 
-
-
-        public static void printBoard(string[,] gameBoard, int[,] numBoard)
+        public static void PrintBoard(string[,] gameBoard, int[,] numBoard)
         {
             Console.Clear();
             for (int row = 0; row < gameBoard.GetLength(0); row++)
@@ -293,7 +326,10 @@ namespace ChessQueens
 
                     if (gameBoard[row, column] != empty)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
+                        if(gameBoard[row, column] == RedKing || gameBoard[row, column] == RedQueen)
+                            Console.ForegroundColor = ConsoleColor.Red;
+                        else
+                            Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write(gameBoard[row, column] + "\t");
                         Console.ForegroundColor = ConsoleColor.DarkGreen;
                     }
@@ -307,6 +343,7 @@ namespace ChessQueens
                 Console.WriteLine();
             }
         }
+
     }
 }
 
